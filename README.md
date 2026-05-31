@@ -57,6 +57,8 @@ Then open your browser at: `http://localhost:5000`
 4. Review results in the dashboard
 5. Click **Download Report** to save a `.txt` report
 
+![screenshot](screenshot.png)
+
 ---
 
 ## How Each Module Works

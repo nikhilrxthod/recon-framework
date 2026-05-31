@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recon Framework</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      color: #333;
+      min-height: 100vh;
+    }
+
+    /* ── Navbar */
+    .navbar {
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .navbar-title { font-size: 15px; font-weight: bold; color: #222; }
+    .navbar-sub { font-size: 12px; color: #888; margin-top: 2px; }
+    .navbar-badge {
+      font-size: 11px;
+      background: #eaf4ff;
+      color: #2478cc;
+      padding: 3px 10px;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+
+    /* ── Layout */
+    .container {
+      max-width: 860px;
+      margin: 24px auto;
+      padding: 0 16px;
+    }
+
+    /* ── Card */
+    .card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #444;
+      margin-bottom: 14px;
+    }
+
+    /* ── Input */
+    .input-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .input-row input {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: #333;
+      outline: none;
+      width: 100%;
+    }
+    .input-row input:focus { border-color: #2478cc; }
+    .input-row input::placeholder { color: #bbb; }
+
+    .btn {
+      background: #2478cc;
+      color: #fff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      width: auto;
+    }
+    .btn:hover { background: #1a62a8; }
+    .btn:disabled { background: #a0c0e8; cursor: not-allowed; }
+
+    /* on small screens button goes full width */
+    @media (max-width: 480px) {
+      .input-row { flex-direction: column; }
+      .btn { width: 100%; }
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: #2478cc;
+      border: 1px solid #2478cc;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 14px;
+      display: none;
+    }
+    .btn-outline:hover { background: #eaf4ff; }
+
+    /* ── Status */
+    .status-msg {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #2478cc;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .status-msg.show { display: flex; }
+    .spinner {
+      width: 14px; height: 14px;
+      border: 2px solid #cce0f5;
+      border-top-color: #2478cc;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Results */
+    #results { display: none; }
+    #results.show { display: block; }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #444;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-weight: normal;
+      white-space: nowrap;
+    }
+    .badge-blue  { background: #eaf4ff; color: #2478cc; }
+    .badge-red   { background: #fff0f0; color: #cc3333; }
+    .badge-green { background: #f0fff4; color: #228b22; }
+    .badge-gray  { background: #f4f4f4; color: #888; }
+
+    /* ── Tables — scrollable on small screens */
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 300px; }
+    th {
+      text-align: left;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: #888;
+      font-weight: normal;
+      border-bottom: 1px solid #eee;
+      white-space: nowrap;
+    }
+    td {
+      padding: 9px 10px;
+      border-bottom: 1px solid #f0f0f0;
+      color: #333;
+      vertical-align: top;
+      word-break: break-word;
+    }
+    tr:last-child td { border-bottom: none; }
+
+    /* ── Tags */
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 10px;
+      margin: 3px 3px 3px 0;
+    }
+    .tag-high   { background: #fff0f0; color: #cc3333; }
+    .tag-medium { background: #fff8e1; color: #b07d00; }
+    .tag-low    { background: #f0f4ff; color: #3355aa; }
+    .tag-tech   { background: #f0fff4; color: #228b22; }
+
+    .empty-msg { font-size: 13px; color: #aaa; padding: 6px 0; display: block; }
+
+    /* ── Info leakage sub-section */
+    .sub-label {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 8px;
+      margin-top: 14px;
+    }
+
+    /* ── Footer */
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #bbb;
+      margin-top: 24px;
+      padding-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="navbar">
+  <div>
+    <div class="navbar-title">Recon Framework</div>
+    <div class="navbar-sub">
+      Nikhil Sahu &nbsp;·&nbsp;
+      <a href="https://github.com/nikhilrxthod" target="_blank" style="color:#2478cc;text-decoration:none;">GitHub</a>
+      &nbsp;·&nbsp;
+      <a href="https://linkedin.com/in/sahunikhil01" target="_blank" style="color:#2478cc;text-decoration:none;">LinkedIn</a>
+    </div>
+  </div>
+  <span class="navbar-badge">v1.0</span>
+</div>
+
+<div class="container">
+
+  <!-- Scan Input -->
+  <div class="card">
+    <div class="card-title">Enter Target Domain</div>
+    <div class="input-row">
+      <input type="text" id="target" placeholder="e.g. example.com" autocomplete="off" />
+      <button class="btn" id="scan-btn" onclick="startScan()">Start Scan</button>
+    </div>
+    <div class="status-msg" id="status-msg">
+      <div class="spinner"></div>
+      <span id="status-text">Initializing...</span>
+    </div>
+    <button class="btn-outline" id="dl-btn" onclick="downloadReport()">↓ Download Report</button>
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+
+    <!-- Subdomains -->
+    <div class="card">
+      <div class="section-title">
+        Subdomain Enumeration
+        <span class="badge badge-blue" id="sub-count">0 found</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Subdomain</th><th>IP Address</th></tr></thead>
+          <tbody id="sub-body">
+            <tr><td colspan="2" class="empty-msg">No results yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Ports -->
+    <div class="card">
+      <div class="section-title">
+        Open Ports
+        <span class="badge badge-gray" id="port-count">—</span>
+      </div>
+      <div id="port-body"><span class="empty-msg">No results yet.</span></div>
+    </div>
+
+    <!-- Security Headers -->
+    <div class="card">
+      <div class="section-title">
+        Security Headers
+        <span class="badge badge-gray" id="header-count">—</span>
+      </div>
+      <div id="header-body"><span class="empty-msg">No results yet.</span></div>
+    </div>
+
+    <!-- Tech Stack -->
+    <div class="card">
+      <div class="section-title">
+        Tech Stack
+        <span class="badge badge-gray" id="tech-count">—</span>
+      </div>
+      <div id="tech-body"><span class="empty-msg">No results yet.</span></div>
+    </div>
+
+  </div><!-- /results -->
+
+  <div class="footer">
+    Built by <a href="https://github.com/nikhilrxthod" target="_blank" style="color:#888;text-decoration:none;">Nikhil Sahu</a>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/nikhilrxthod" target="_blank" style="color:#888;text-decoration:none;">GitHub</a>
+    &nbsp;·&nbsp;
+    <a href="https://linkedin.com/in/sahunikhil01" target="_blank" style="color:#888;text-decoration:none;">LinkedIn</a>
+    &nbsp;·&nbsp; For authorized security testing only.
+  </div>
+</div>
+
+<script>
+  let currentJobId = null;
+  let pollTimer = null;
+
+  function startScan() {
+    const target = document.getElementById("target").value.trim();
+    if (!target) { alert("Please enter a target domain."); return; }
+
+    currentJobId = null;
+    document.getElementById("results").classList.remove("show");
+    document.getElementById("dl-btn").style.display = "none";
+    document.getElementById("scan-btn").disabled = true;
+    document.getElementById("scan-btn").textContent = "Scanning...";
+    showStatus("Starting scan...");
+
+    fetch("/scan/start", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ target })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.error) { alert(data.error); resetBtn(); return; }
+      currentJobId = data.job_id;
+      pollTimer = setInterval(pollStatus, 2000);
+    })
+    .catch(() => { alert("Could not connect to server."); resetBtn(); });
+  }
+
+  function pollStatus() {
+    if (!currentJobId) return;
+    fetch(`/scan/status/${currentJobId}`)
+      .then(r => r.json())
+      .then(data => {
+        showStatus(data.status);
+        if (data.status === "done") {
+          clearInterval(pollTimer);
+          renderResults(data.results);
+          resetBtn();
+          hideStatus();
+          document.getElementById("dl-btn").style.display = "inline-block";
+        } else if (data.status === "error") {
+          clearInterval(pollTimer);
+          alert("Error: " + (data.error || "Something went wrong."));
+          resetBtn();
+          hideStatus();
+        }
+      });
+  }
+
+  function renderResults(r) {
+    document.getElementById("results").classList.add("show");
+
+    // Subdomains
+    const subs = r.subdomains || [];
+    document.getElementById("sub-count").textContent = subs.length + " found";
+    const subBody = document.getElementById("sub-body");
+    if (subs.length === 0) {
+      subBody.innerHTML = '<tr><td colspan="2" class="empty-msg">No live subdomains found.</td></tr>';
+    } else {
+      subBody.innerHTML = subs.map(s =>
+        `<tr>
+          <td style="word-break:break-all">${s.subdomain}</td>
+          <td style="color:#888;white-space:nowrap">${s.ip}</td>
+        </tr>`
+      ).join("");
+    }
+
+    // Ports
+    const ports = r.ports || {};
+    const open = ports.open || [];
+    const portCount = document.getElementById("port-count");
+    portCount.textContent = open.length + " open";
+    portCount.className = "badge " + (open.length > 0 ? "badge-red" : "badge-green");
+    const portBody = document.getElementById("port-body");
+    if (ports.error) {
+      portBody.innerHTML = `<span class="empty-msg">${ports.error}</span>`;
+    } else if (open.length === 0) {
+      portBody.innerHTML = '<span class="empty-msg">No common ports found open.</span>';
+    } else {
+      portBody.innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Port</th><th>Service</th><th>Status</th></tr></thead>
+            <tbody>
+              ${open.map(p => `
+                <tr>
+                  <td>${p.port}</td>
+                  <td>${p.service}</td>
+                  <td style="color:#228b22">Open</td>
+                </tr>`).join("")}
+            </tbody>
+          </table>
+        </div>`;
+    }
+
+    // Headers
+    const hdr = r.headers || {};
+    const missing = hdr.missing || [];
+    const infoLeak = hdr.info_leak || [];
+    const headerCount = document.getElementById("header-count");
+    headerCount.textContent = missing.length + " missing";
+    headerCount.className = "badge " + (missing.length > 0 ? "badge-red" : "badge-green");
+    const headerBody = document.getElementById("header-body");
+    if (hdr.error) {
+      headerBody.innerHTML = `<span class="empty-msg">${hdr.error}</span>`;
+    } else {
+      let html = "";
+      if (missing.length > 0) {
+        html += `
+          <p class="sub-label" style="margin-top:0">Missing headers are potential findings:</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Header</th><th>Risk</th><th>Description</th></tr></thead>
+              <tbody>
+                ${missing.map(h => `
+                  <tr>
+                    <td style="word-break:break-all">${h.header}</td>
+                    <td><span class="tag tag-${h.risk.toLowerCase()}">${h.risk}</span></td>
+                    <td style="color:#888">${h.description}</td>
+                  </tr>`).join("")}
+              </tbody>
+            </table>
+          </div>`;
+      } else {
+        html += '<span class="empty-msg">All security headers present.</span>';
+      }
+      if (infoLeak.length > 0) {
+        html += `
+          <p class="sub-label">Info leakage detected:</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Header</th><th>Value</th></tr></thead>
+              <tbody>
+                ${infoLeak.map(h => `
+                  <tr>
+                    <td>${h.header}</td>
+                    <td style="color:#b07d00;word-break:break-all">${h.value}</td>
+                  </tr>`).join("")}
+              </tbody>
+            </table>
+          </div>`;
+      }
+      headerBody.innerHTML = html;
+    }
+
+    // Tech stack
+    const tech = r.tech || {};
+    const detected = tech.detected || [];
+    const techCount = document.getElementById("tech-count");
+    techCount.textContent = detected.length + " detected";
+    techCount.className = "badge " + (detected.length > 0 ? "badge-green" : "badge-gray");
+    const techBody = document.getElementById("tech-body");
+    if (tech.error) {
+      techBody.innerHTML = `<span class="empty-msg">${tech.error}</span>`;
+    } else if (detected.length === 0) {
+      techBody.innerHTML = '<span class="empty-msg">No known technologies detected.</span>';
+    } else {
+      techBody.innerHTML = detected.map(t =>
+        `<span class="tag tag-tech">${t}</span>`
+      ).join("");
+    }
+  }
+
+  function downloadReport() {
+    if (currentJobId) window.location.href = `/report/${currentJobId}`;
+  }
+
+  function showStatus(msg) {
+    const el = document.getElementById("status-msg");
+    el.classList.add("show");
+    document.getElementById("status-text").textContent = msg;
+  }
+
+  function hideStatus() {
+    document.getElementById("status-msg").classList.remove("show");
+  }
+
+  function resetBtn() {
+    document.getElementById("scan-btn").disabled = false;
+    document.getElementById("scan-btn").textContent = "Start Scan";
+  }
+
+  document.getElementById("target").addEventListener("keydown", e => {
+    if (e.key === "Enter") startScan();
+  });
+</script>
+
+</body>
+</html>

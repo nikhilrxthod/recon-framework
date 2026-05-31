@@ -4,6 +4,8 @@ A lightweight web-based reconnaissance tool built for bug bounty hunting and pen
 
 Built from the workflow I developed during 3 years of bug bounty hunting on HackerOne.
 
+![screenshot](screenshot.png)
+
 ---
 
 ## Features
@@ -56,8 +58,6 @@ Then open your browser at: `http://localhost:5000`
 3. Wait for each module to complete (status updates live)
 4. Review results in the dashboard
 5. Click **Download Report** to save a `.txt` report
-
-![screenshot](screenshot.png)
 
 ---
 

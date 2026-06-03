@@ -41,7 +41,7 @@ recon-framework/
 ## Installation
 
 ```bash
-git clone https://github.com/nikhilrxthod/recon-framework.git
+git clone https://github.com/heynick1337/recon-framework.git
 cd recon-framework
 pip install -r requirements.txt
 python app.py
@@ -87,5 +87,5 @@ This tool is for educational purposes and authorized security testing only. Only
 
 **Nikhil Sahu**
 
-- GitHub: [github.com/nikhilrxthod](https://github.com/heynick1337)
+- GitHub: [github.com/heynick1337](https://github.com/heynick1337)
 - LinkedIn: [linkedin.com/in/sahunikhil01](https://linkedin.com/in/sahunikhil01)

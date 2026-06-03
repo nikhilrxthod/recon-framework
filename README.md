@@ -87,5 +87,5 @@ This tool is for educational purposes and authorized security testing only. Only
 
 **Nikhil Sahu**
 
-- GitHub: [github.com/nikhilrxthod](https://github.com/nikhilrxthod)
+- GitHub: [github.com/nikhilrxthod](https://github.com/heynick1337)
 - LinkedIn: [linkedin.com/in/sahunikhil01](https://linkedin.com/in/sahunikhil01)

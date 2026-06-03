@@ -11,6 +11,8 @@ WORDLIST = [
     "monitor", "cms", "old", "new", "panel", "cpanel", "whm", "internal",
     "intranet", "network", "backup", "db", "database", "mysql", "phpmyadmin",
     "demo", "preview", "preprod", "prod", "staging", "uat", "qa", "v2", "v1",
+    "cloud", "assets", "redirect", "mobile", "pay",
+    "checkout", "crm", "erp", "smtp2", "ns3",
 ]
 
 
